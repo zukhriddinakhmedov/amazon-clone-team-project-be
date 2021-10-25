@@ -6,6 +6,13 @@ import { join } from "path";
 import productsRouter from "./services/products/index.js";
 import reviewsRouter from "./services/reviews/index.js";
 
+import {
+  genericErrorHandler,
+  badRequestHandler,
+  unauthorizedHandler,
+  notFoundHandler,
+} from "./errorHandlers.js";
+
 const server = express();
 
 const publicFolderPath = join(process.cwd(), "./public");
@@ -26,6 +33,10 @@ server.use("/reviews", reviewsRouter);
 
 // ******************** ERROR MIDDLEWARES **********************
 // here all error handlers are generic to all the endpoints
+server.use(badRequestHandler);
+server.use(unauthorizedHandler);
+server.use(notFoundHandler);
+server.use(genericErrorHandler);
 
 // ******************** END ERROR MIDDLEWARES **********************
 

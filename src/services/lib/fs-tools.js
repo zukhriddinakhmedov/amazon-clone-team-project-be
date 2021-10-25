@@ -1,12 +1,19 @@
-import fs from "fs-extra"; // fs-extra gives us same methods of fs (plus some extras) and gives us PROMISES!
+import express from "express";
+import fs from "fs-extra";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 
-const { readJSON, writeJSON } = fs; // readJSON and writeJSON are not part of the "normal" fs module
+const { readJson, writeJson } = fs;
 
-const dataFolderPath = join(dirname(fileURLToPath(import.meta.url)), "../data");
+const dataFolder = join(dirname(fileURLToPath(import.meta.url)), "../data");
 
-const reviewsJSONPath = join(dataFolderPath, "reviews.json");
+const producsJSONpath = join(dataFolder, "products.json");
+
+const publicFolderPath = join(process.cwd(), "./public/img/products");
+
+export const getProducts = () => readJson(producsJSONpath);
+
+export const writeProducts = (content) => writeJson(producsJSONpath, content);
 
 export const getReviews = () => readJSON(reviewsJSONPath);
 
