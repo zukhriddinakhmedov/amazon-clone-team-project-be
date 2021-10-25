@@ -10,6 +10,15 @@ import {
   writeProducts,
   saveProductsImages,
 } from "../../services/lib/fs-tools.js";
+
+import {
+  createNewReview,
+  getProductReviews,
+  individualReview,
+  editReview,
+  deleteReview,
+} from "../../services/reviews/index.js";
+
 import { validationResult } from "express-validator";
 
 const productsRouter = express.Router();
@@ -123,39 +132,49 @@ productsRouter.delete("/:productID", async (req, res, next) => {
 });
 
 // POST PICTURES
+const postPicturesHandler = async (req, res, next) => {
+  try {
+    const extention = path.extname(req.file.originalname);
+
+    const fileName = req.params.productID + extention;
+
+    if (req.file) {
+      await saveProductsImages(fileName, req.file.buffer);
+
+      const imgUrl = `http://localhost:3001/img/products/${req.params.productID}${extention}`;
+
+      const products = await getProducts();
+
+      const product = products.find((p) => p._id === req.params.productID);
+
+      product.imageUrl = imgUrl;
+
+      const productArray = products.filter(
+        (p) => p._id !== req.params.productID
+      );
+
+      productArray.push(product);
+      await writeProducts(productArray);
+      res.status(200).send(product);
+    } else {
+      next(createHttpError(400, `bad request with image posting `));
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
 productsRouter.post(
   "/:productID",
   multer().single("product-image"),
-  async (req, res, next) => {
-    try {
-      const extention = path.extname(req.file.originalname);
-
-      const fileName = req.params.productID + extention;
-
-      if (req.file) {
-        await saveProductsImages(fileName, req.file.buffer);
-
-        const imgUrl = `http://localhost:3001/img/products/${req.params.productID}${extention}`;
-
-        const products = await getProducts();
-
-        const product = products.find((p) => p._id === req.params.productID);
-
-        product.imageUrl = imgUrl;
-
-        const productArray = products.filter(
-          (p) => p._id !== req.params.productID
-        );
-
-        productArray.push(product);
-        await writeProducts(productArray);
-        res.status(200).send(product);
-      } else {
-        next(createHttpError(400, `bad request with image posting `));
-      }
-    } catch (error) {
-      next(error);
-    }
-  }
+  postPicturesHandler
 );
+
+/* PRODUCT REVIEWS  these functions are imported from reviews folder */
+productsRouter.post("/:productID/reviews", createNewReview);
+productsRouter.get("/:productID/reviews", getProductReviews);
+productsRouter.get("/:productID/reviews/:reviewId", individualReview);
+productsRouter.put("/:productID/reviews/:reviewId", editReview);
+productsRouter.delete("/:productID/reviews/:reviewId", deleteReview);
+
 export default productsRouter;
