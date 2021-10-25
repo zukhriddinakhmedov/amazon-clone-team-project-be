@@ -47,8 +47,63 @@ productsRouter.get("/", async (req, res, next) => {
   }
 });
 
-productsRouter.get("/:productID", async (req, res, next) => {});
-productsRouter.put("/:productID", async (req, res, next) => {});
+productsRouter.get("/:productID", async (req, res, next) => {
+  try {
+    const products = await getProducts();
+
+    const product = products.find((p) => p._id === req.params.productID);
+
+    if (product) {
+      res.status(201).send(product);
+    } else {
+      next(
+        createHttpError(
+          404,
+          `Product with id ${req.params.productID} does not exist`
+        )
+      );
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+productsRouter.put("/:productID", async (req, res, next) => {
+  try {
+    const products = await getProducts();
+
+    const index = products.findIndex((p) => p._id === req.params.productID);
+
+    const productToEdit = products[index];
+
+    if (productToEdit) {
+      const editedFiled = req.body;
+      const updates = {
+        ...productToEdit,
+        ...editedFiled,
+        updatedAt: new Date(),
+      };
+
+      products[index] = updates;
+
+      await writeProducts(products);
+
+      console.log(updates);
+      res.status(201).send(products[index]);
+    } else {
+      console.log(req.params.productID);
+      next(
+        createHttpError(
+          404,
+          `product youre trying to edit does not exist ${req.params.productID}`
+        )
+      );
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
 productsRouter.delete("/:productID", async (req, res, next) => {});
 
 export default productsRouter;
