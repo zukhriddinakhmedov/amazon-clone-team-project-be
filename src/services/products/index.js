@@ -34,9 +34,9 @@ productsRouter.get("/", async (req, res, next) => {
   try {
     const products = await getProducts();
 
-    if (req.query && req.query.name) {
+    if (req.query && req.query.category) {
       const filteredProducts = products.filter(
-        (p) => p.name.toLowerCase() === req.query.name.toLowerCase()
+        (p) => p.name.toLowerCase() === req.query.category.toLowerCase()
       );
       res.status(200).send(filteredProducts);
     } else {
