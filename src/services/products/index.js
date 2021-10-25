@@ -104,6 +104,18 @@ productsRouter.put("/:productID", async (req, res, next) => {
   }
 });
 
-productsRouter.delete("/:productID", async (req, res, next) => {});
+productsRouter.delete("/:productID", async (req, res, next) => {
+  try {
+    const products = await getProducts();
+    const productsRemaining = products.filter(
+      (product) => product._id !== req.params.productID
+    );
+
+    await writeProducts(productsRemaining);
+    res.status(200).send(productsRemaining);
+  } catch (error) {
+    next(error);
+  }
+});
 
 export default productsRouter;
