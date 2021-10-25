@@ -9,11 +9,17 @@ import { getProducts, writeProducts } from "../../services/lib/fs-tools.js";
 
 const productsRouter = express.Router();
 
-productsRouter.post("/", async (req, res, next) => {});
+productsRouter.post("/", async (req, res, next) => {
+  const products = await getProducts();
+});
 
 productsRouter.get("/", async (req, res, next) => {
-  const produts = await getProducts();
-  res.send(produts);
+  try {
+    const produts = await getProducts();
+    res.send(produts);
+  } catch (error) {
+    console.error(error);
+  }
 });
 
 productsRouter.get("/:productID", async (req, res, next) => {});
