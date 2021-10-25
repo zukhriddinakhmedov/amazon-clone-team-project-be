@@ -3,7 +3,7 @@ import fs from "fs-extra";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 
-const { readJson, writeJson } = fs;
+const { readJson, writeJson, writeFile } = fs;
 
 const dataFolder = join(dirname(fileURLToPath(import.meta.url)), "../data");
 
@@ -14,3 +14,6 @@ const publicFolderPath = join(process.cwd(), "./public/img/products");
 export const getProducts = () => readJson(producsJSONpath);
 
 export const writeProducts = (content) => writeJson(producsJSONpath, content);
+
+export const saveProductsImages = (fileName, contentAsBuffer) =>
+  writeFile(join(publicFolderPath, fileName), contentAsBuffer);
