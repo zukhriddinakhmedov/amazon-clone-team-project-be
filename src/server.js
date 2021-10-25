@@ -4,8 +4,11 @@ import listEndpoints from "express-list-endpoints";
 import { join } from "path";
 
 import productsRouter from "./services/products/index.js";
+import reviewsRouter from "./services/reviews/index.js";
 
 const server = express();
+
+const publicFolderPath = join(process.cwd(), "./public")
 
 // ******************** Global middlewares **********************
 
@@ -17,6 +20,7 @@ const staticFolderPath = join(process.cwd(), "./public");
 server.use(express.static(staticFolderPath));
 
 server.use("/products", productsRouter);
+server.use("/reviews", reviewsRouter);
 
 // ************************ END **********************
 
