@@ -8,7 +8,7 @@ import reviewsRouter from "./services/reviews/index.js";
 
 const server = express();
 
-const publicFolderPath = join(process.cwd(), "./public")
+const publicFolderPath = join(process.cwd(), "./public");
 
 // ******************** Global middlewares **********************
 
