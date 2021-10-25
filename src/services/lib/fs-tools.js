@@ -14,3 +14,7 @@ const publicFolderPath = join(process.cwd(), "./public/img/products");
 export const getProducts = () => readJson(producsJSONpath);
 
 export const writeProducts = (content) => writeJson(producsJSONpath, content);
+
+export const getReviews = () => readJSON(reviewsJSONPath);
+
+export const writeReviews = (content) => writeJSON(reviewsJSONPath, content);
